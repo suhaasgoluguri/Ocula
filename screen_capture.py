@@ -1,6 +1,5 @@
-from mss import mss
+import mss
 import numpy as np
-from mss import tools
 import cv2
 import threading
 import time
@@ -24,7 +23,7 @@ def stop_capture():
     run = False
 
 def run_loop():
-    global running, frame_list, target_frame_time
+    global run, frame_list, target_frame_time
     with mss.mss() as sct:   
         while running:
             iter_start = time.time()

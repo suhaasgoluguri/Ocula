@@ -1,5 +1,4 @@
 import numpy as np
-import cv2
 import screen_capture
 
 frame_deque = screen_capture.frame_list
@@ -16,9 +15,9 @@ def relative_luminance():
     mask = normalized <= 0.03928
     linearized = np.where(mask, normalized/12.92, ((normalized+0.055)/1.055)**2.4) 
     
-    r = linearized[:, :, :, 0]
-    g = linearized[:, :, :, 1]
-    b = linearized[:, :, :, 2]
+    r = linearized[:, :, :, :, 0]
+    g = linearized[:, :, :, :, 1]
+    b = linearized[:, :, :, :, 2]
 
     relative_lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
     mean_lum = relative_lum.mean(axis=(2,3))
