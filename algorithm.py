@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-from collections import deque
 import screen_capture
 
 frame_deque = screen_capture.frame_list
@@ -17,11 +16,21 @@ def relative_luminance():
     mask = normalized <= 0.03928
     linearized = np.where(mask, normalized/12.92, ((normalized+0.055)/1.055)**2.4) 
     
-    red = linearized[:, :, :, 0]
-    green = linearized[:, :, :, 1]
-    blue = linearized[:, :, :, 2]
+    r = linearized[:, :, :, 0]
+    g = linearized[:, :, :, 1]
+    b = linearized[:, :, :, 2]
 
-    relative_luminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue
-    return relative_luminance
+    relative_lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    mean_lum = relative_lum.mean(axis=(2,3))
+    return mean_lum
 
+def detect_luminance_change():
+    lum_values = relative_luminance()
+    flash_counts = np.array(144)
+    rise = True
+    fall = False
+    current_lum = lum_values[0, :]
+
+    mask = np.where(current_lum * 1.1 < lum_values)
+    #problem: rise and fall will be at different points for different chunks, need to figure out how to redefine masks properly
 
